@@ -1,5 +1,5 @@
 var session = require("express-session");
-var redis = require("./redisConnect").reids;
+var redis = require("./redisConnect").redis;
 var redisStore = require("connect-redis")(session);
 
 module.exports = session({
