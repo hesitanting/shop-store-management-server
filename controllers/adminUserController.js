@@ -24,21 +24,22 @@ class adminUserController {
     try {
       let name = req.body.name;
       let pwd = decodeURI(req.body.pwd);
-      let decryptPwd = rsaKey.decrypt(pwd, "utf8");
+      let decryptPwd = rsaKey.decrypt(pwd, "utf8"); // 私钥解密密码
       if (hasEmpty(name, decryptPwd)) {
         res.json(resMsg(9001));
         return false;
       } else {
-        let result = await adminUserModel.getUserInfo(name);
+        let result = await adminUserModel.getUserInfo(name); // 更加用户名获取用户信息
         if (result === null) {
-          res.json(resMsg(1001));
+          res.json(resMsg(1001)); // 无此用户
           return false;
         }
-        if (decryptPwd === result.pwd) {
-          req.session.loginUser = result.name;
+        if (decryptPwd === result.pwd) { // 判断密码是否正确
+          req.session.loginUser = result.name; // 登录成功后设置成功标识
+          req.session.loginId = result.id;
           res.json(resMsg(200));
         } else {
-          res.json(resMsg(1002));
+          res.json(resMsg(1002)); // 密码错误
         }
       }
     } catch (error) {
